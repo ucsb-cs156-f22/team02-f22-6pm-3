@@ -59,9 +59,9 @@ public class UCSBOrganizationsController extends ApiController {
     @PostMapping("/post")
     public UCSBOrganizations postOrganizations(
         @ApiParam("orgCode") @RequestParam String orgcode,
-        @ApiParam("orfTranslation") @RequestParam String orgtranslation,
+        @ApiParam("orgTranslation") @RequestParam String orgtranslation,
         @ApiParam("orgTranslationShort") @RequestParam String orgtranslationshort,
-        @ApiParam("incavtive") @RequestParam boolean inactive
+        @ApiParam("inactive") @RequestParam boolean inactive
         )
         {
 
@@ -70,9 +70,7 @@ public class UCSBOrganizationsController extends ApiController {
         ucsbOrgs.setOrgTranslation(orgtranslation);
         ucsbOrgs.setOrgTranslationShort(orgtranslationshort);
         ucsbOrgs.setInactive(inactive);
-        //commons.setHasDiningCam(hasDiningCam);
-        //commons.setLatitude(latitude);
-        //commons.setLongitude(longitude);
+
 
         UCSBOrganizations savedOrganizations = ucsbOrganizationsRepository.save(ucsbOrgs);
 
