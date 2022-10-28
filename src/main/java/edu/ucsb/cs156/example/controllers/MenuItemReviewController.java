@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import edu.ucsb.cs156.example.entities.MenuItemReview;
 import edu.ucsb.cs156.example.repositories.MenuItemReviewRepository;
+import edu.ucsb.cs156.example.errors.EntityNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -36,6 +37,19 @@ public class MenuItemReviewController extends ApiController {
         Iterable<MenuItemReview> menuItemReviews = menuItemReviewRepository.findAll();
         return menuItemReviews;
     }
+
+
+    @ApiOperation(value = "Get a single review")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("")
+    public MenuItemReview getById(
+            @ApiParam("id") @RequestParam Long id) {
+        MenuItemReview menuItemReview = menuItemReviewRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(MenuItemReview.class, id));
+
+        return menuItemReview;
+    }
+
     @ApiOperation(value="Create a new menu item review")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value="/post")
