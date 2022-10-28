@@ -94,7 +94,7 @@ public class HelpRequestsControllerTests extends ControllerTestCase {
                                 .tableOrBreakoutRoom("7")
                                 .requestTime(ldt)
                                 .explanation("Need help with Swagger-ui")
-                                .solved(false)
+                                .solved(true)
                                 .build();
 
                 when(helpRequestRepository.findById(eq(123L))).thenReturn(Optional.of(helpRequest));
@@ -144,7 +144,7 @@ public class HelpRequestsControllerTests extends ControllerTestCase {
                                 .tableOrBreakoutRoom("11")
                                 .requestTime(ldt1)
                                 .explanation("Heroku problems")
-                                .solved(false)
+                                .solved(true)
                                 .build();
 
                 LocalDateTime ldt2 = LocalDateTime.parse("2022-03-11T00:00:00");
@@ -155,7 +155,7 @@ public class HelpRequestsControllerTests extends ControllerTestCase {
                                 .tableOrBreakoutRoom("13")
                                 .requestTime(ldt2)
                                 .explanation("Merge conflict")
-                                .solved(false)
+                                .solved(true)
                                 .build();
 
                 ArrayList<HelpRequest> expectedRequests = new ArrayList<>();
@@ -188,14 +188,14 @@ public class HelpRequestsControllerTests extends ControllerTestCase {
                                 .tableOrBreakoutRoom("13")
                                 .requestTime(ldt1)
                                 .explanation("Merge-conflict")
-                                .solved(false)
+                                .solved(true)
                                 .build();
 
                 when(helpRequestRepository.save(eq(helpRequest1))).thenReturn(helpRequest1);
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                post("/api/helprequests/post?requesterEmail=pdg@ucsb.edu&teamId=s22-6pm-4&tableOrBreakoutRoom=13&requestTime=2022-01-03T00:00:00&explanation=Merge-conflict&solved=false")
+                                post("/api/helprequests/post?requesterEmail=pdg@ucsb.edu&teamId=s22-6pm-4&tableOrBreakoutRoom=13&requestTime=2022-01-03T00:00:00&explanation=Merge-conflict&solved=true")
                                                 .with(csrf()))
                                 .andExpect(status().isOk()).andReturn();
 
@@ -205,7 +205,7 @@ public class HelpRequestsControllerTests extends ControllerTestCase {
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(expectedJson, responseString);
         }
-        /* 
+
         @WithMockUser(roles = { "ADMIN", "USER" })
         @Test
         public void admin_can_delete_a_date() throws Exception {
@@ -214,9 +214,12 @@ public class HelpRequestsControllerTests extends ControllerTestCase {
                 LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
 
                 HelpRequest helpRequest1 = HelpRequest.builder()
-                                .name("firstDayOfClasses")
-                                .quarterYYYYQ("20222")
-                                .localDateTime(ldt1)
+                                .requesterEmail("pdg@ucsb.edu")
+                                .teamId("s22-6pm-4")
+                                .tableOrBreakoutRoom("13")
+                                .requestTime(ldt1)
+                                .explanation("Merge-conflict")
+                                .solved(true)
                                 .build();
 
                 when(helpRequestRepository.findById(eq(15L))).thenReturn(Optional.of(helpRequest1));
@@ -264,24 +267,30 @@ public class HelpRequestsControllerTests extends ControllerTestCase {
                 LocalDateTime ldt2 = LocalDateTime.parse("2023-01-03T00:00:00");
 
                 HelpRequest helpRequestOrig = HelpRequest.builder()
-                                .name("firstDayOfClasses")
-                                .quarterYYYYQ("20222")
-                                .localDateTime(ldt1)
+                                .requesterEmail("pdg@ucsb.edu")
+                                .teamId("s22-6pm-4")
+                                .tableOrBreakoutRoom("13")
+                                .requestTime(ldt1)
+                                .explanation("Merge-conflict")
+                                .solved(false)
                                 .build();
 
                 HelpRequest helpRequestEdited = HelpRequest.builder()
-                                .name("firstDayOfFestivus")
-                                .quarterYYYYQ("20232")
-                                .localDateTime(ldt2)
+                                .requesterEmail("pdgss@ucsb.edu")
+                                .teamId("s22-4pm-4")
+                                .tableOrBreakoutRoom("15")
+                                .requestTime(ldt2)
+                                .explanation("Merge-fixed")
+                                .solved(true)
                                 .build();
 
                 String requestBody = mapper.writeValueAsString(helpRequestEdited);
 
-                when(helpRequestRepository.findById(eq(67L))).thenReturn(Optional.of(helpRequestOrig));
+                when(helpRequestRepository.findById(eq(123L))).thenReturn(Optional.of(helpRequestOrig));
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                put("/api/helprequests?id=67")
+                                put("/api/helprequests?id=123")
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .characterEncoding("utf-8")
                                                 .content(requestBody)
@@ -289,7 +298,7 @@ public class HelpRequestsControllerTests extends ControllerTestCase {
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
-                verify(helpRequestRepository, times(1)).findById(67L);
+                verify(helpRequestRepository, times(1)).findById(123L);
                 verify(helpRequestRepository, times(1)).save(helpRequestEdited); // should be saved with correct user
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(requestBody, responseString);
@@ -302,19 +311,22 @@ public class HelpRequestsControllerTests extends ControllerTestCase {
 
                 LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
 
-                HelpRequest ucsbEditedDate = HelpRequest.builder()
-                                .name("firstDayOfClasses")
-                                .quarterYYYYQ("20222")
-                                .localDateTime(ldt1)
+                HelpRequest helpRequestEdited = HelpRequest.builder()
+                                .requesterEmail("pdg@ucsb.edu")
+                                .teamId("s22-6pm-4")
+                                .tableOrBreakoutRoom("13")
+                                .requestTime(ldt1)
+                                .explanation("Merge-conflict")
+                                .solved(true)
                                 .build();
 
-                String requestBody = mapper.writeValueAsString(ucsbEditedDate);
+                String requestBody = mapper.writeValueAsString(helpRequestEdited);
 
-                when(helpRequestRepository.findById(eq(67L))).thenReturn(Optional.empty());
+                when(helpRequestRepository.findById(eq(123L))).thenReturn(Optional.empty());
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                put("/api/helprequests?id=67")
+                                put("/api/helprequests?id=123")
                                                 .contentType(MediaType.APPLICATION_JSON)
                                                 .characterEncoding("utf-8")
                                                 .content(requestBody)
@@ -322,9 +334,9 @@ public class HelpRequestsControllerTests extends ControllerTestCase {
                                 .andExpect(status().isNotFound()).andReturn();
 
                 // assert
-                verify(helpRequestRepository, times(1)).findById(67L);
+                verify(helpRequestRepository, times(1)).findById(123L);
                 Map<String, Object> json = responseToJson(response);
-                assertEquals("HelpRequest with id 67 not found", json.get("message"));
+                assertEquals("HelpRequest with id 123 not found", json.get("message"));
 
-        }*/
+        }
 }
