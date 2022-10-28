@@ -56,13 +56,12 @@ public class HelpRequestsControllerTests extends ControllerTestCase {
                 mockMvc.perform(get("/api/helprequests/all"))
                                 .andExpect(status().is(200)); // logged
         }
-        /* 
+
         @Test
         public void logged_out_users_cannot_get_by_id() throws Exception {
-                mockMvc.perform(get("/api/helprequests?id=7"))
+                mockMvc.perform(get("/api/helprequests?id=123"))
                                 .andExpect(status().is(403)); // logged out users can't get by id
         }
-        */
 
         // Authorization tests for /api/helprequests/post
         // (Perhaps should also have these for put and delete)
@@ -81,7 +80,7 @@ public class HelpRequestsControllerTests extends ControllerTestCase {
         }
 
         // // Tests with mocks for database actions
-        /*
+
         @WithMockUser(roles = { "USER" })
         @Test
         public void test_that_logged_in_user_can_get_by_id_when_the_id_exists() throws Exception {
@@ -98,15 +97,15 @@ public class HelpRequestsControllerTests extends ControllerTestCase {
                                 .solved(false)
                                 .build();
 
-                when(helpRequestRepository.findById(eq(7L))).thenReturn(Optional.of(helpRequest));
+                when(helpRequestRepository.findById(eq(123L))).thenReturn(Optional.of(helpRequest));
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/helprequests?id=7"))
+                MvcResult response = mockMvc.perform(get("/api/helprequests?id=123"))
                                 .andExpect(status().isOk()).andReturn();
 
                 // assert
 
-                verify(helpRequestRepository, times(1)).findById(eq(7L));
+                verify(helpRequestRepository, times(1)).findById(eq(123L));
                 String expectedJson = mapper.writeValueAsString(helpRequest);
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(expectedJson, responseString);
@@ -118,19 +117,19 @@ public class HelpRequestsControllerTests extends ControllerTestCase {
 
                 // arrange
 
-                when(helpRequestRepository.findById(eq(7L))).thenReturn(Optional.empty());
+                when(helpRequestRepository.findById(eq(123L))).thenReturn(Optional.empty());
 
                 // act
-                MvcResult response = mockMvc.perform(get("/api/helprequests?id=7"))
+                MvcResult response = mockMvc.perform(get("/api/helprequests?id=123"))
                                 .andExpect(status().isNotFound()).andReturn();
 
                 // assert
 
-                verify(helpRequestRepository, times(1)).findById(eq(7L));
+                verify(helpRequestRepository, times(1)).findById(eq(123L));
                 Map<String, Object> json = responseToJson(response);
                 assertEquals("EntityNotFoundException", json.get("type"));
-                assertEquals("HelpRequest with id 7 not found", json.get("message"));
-        }*/
+                assertEquals("HelpRequest with id 123 not found", json.get("message"));
+        }
 
         @WithMockUser(roles = { "USER" })
         @Test
