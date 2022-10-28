@@ -67,6 +67,7 @@ public class RecommendationRequestController extends ApiController {
         @ApiParam("dateNeeded") @RequestParam LocalDateTime dateNeeded,
         @ApiParam("done") @RequestParam boolean done
     ) throws JsonProcessingException{
+        
         log.info("localDateTime={}", dateRequested);
 
         RecommendationRequest recrequest = new RecommendationRequest();
@@ -105,11 +106,11 @@ public RecommendationRequest updateRecommendationRequest(
                 .orElseThrow(() -> new EntityNotFoundException(RecommendationRequest.class, id));
 
                 recrequest.setDateNeeded(incoming.getDateNeeded());
-                recrequest.setDateRequested(incoming.getDateRequested());
-                recrequest.setDone(incoming.getDone());
-                recrequest.setExplanation(incoming.getExplanation());
                 recrequest.setProfessorEmail(incoming.getProfessorEmail());
                 recrequest.setRequesterEmail(incoming.getRequesterEmail());
+                recrequest.setDateRequested(incoming.getDateRequested());
+                recrequest.setExplanation(incoming.getExplanation());
+                recrequest.setDone(incoming.getDone());
 
                 recommendationRequest.save(recrequest);
 

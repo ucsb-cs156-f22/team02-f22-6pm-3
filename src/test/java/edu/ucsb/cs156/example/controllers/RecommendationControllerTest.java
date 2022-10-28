@@ -172,6 +172,38 @@ public class RecommendationControllerTest extends ControllerTestCase {
 
         @WithMockUser(roles = { "ADMIN", "USER" })
         @Test
+        public void an_admin_user_can_post_a_new_recrequest() throws Exception {
+                // arrange
+
+                LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+
+                RecommendationRequest recrequest1 = RecommendationRequest.builder()
+                        .requesterEmail("RequestingAProfessor")
+                        .professorEmail("AttemptingToReachProfessor")
+                        .explanation("EducationLevel")
+                        .dateRequested(ldt1)
+                        .dateNeeded(ldt1)
+                        .done(true)
+                        .build();
+
+                when(recommendationRepository.save(eq(recrequest1))).thenReturn(recrequest1);
+
+                // act
+                MvcResult response = mockMvc.perform(
+                                post("/api/recommendationrequests/post?requesterEmail=RequestingAProfessor&professorEmail=AttemptingToReachProfessor&explanation=EducationLevel&dateRequested=2022-01-03T00:00:00&dateNeeded=2022-01-03T00:00:00&done=true")
+                                                .with(csrf()))
+                                .andExpect(status().isOk()).andReturn();
+
+                // assert
+                verify(recommendationRepository, times(1)).save(recrequest1);
+                String expectedJson = mapper.writeValueAsString(recrequest1);
+                String responseString = response.getResponse().getContentAsString();
+                assertEquals(expectedJson, responseString);
+        }
+
+
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
         public void admin_can_delete_a_request() throws Exception {
                 // arrange
 
@@ -240,12 +272,12 @@ public class RecommendationControllerTest extends ControllerTestCase {
                         .build();
 
                 RecommendationRequest recrequestEdited = RecommendationRequest.builder()
-                        .requesterEmail("RequestingAProfessor")
-                        .professorEmail("AttemptingToReachProfessor")
-                        .explanation("EducationLevel")
+                        .requesterEmail("RequestingAStudent")
+                        .professorEmail("AttemptingToReachAStudent")
+                        .explanation("InternshipExperience")
                         .dateRequested(ldt2)
                         .dateNeeded(ldt2)
-                        .done(false)
+                        .done(true)
                         .build();
                     // Finish here
                 String requestBody = mapper.writeValueAsString(recrequestEdited);
