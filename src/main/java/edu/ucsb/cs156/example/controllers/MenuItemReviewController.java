@@ -2,6 +2,8 @@ package edu.ucsb.cs156.example.controllers;
 
 import java.time.LocalDateTime;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,9 +18,11 @@ import edu.ucsb.cs156.example.errors.EntityNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -47,6 +51,25 @@ public class MenuItemReviewController extends ApiController {
         MenuItemReview menuItemReview = menuItemReviewRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(MenuItemReview.class, id));
 
+        return menuItemReview;
+    }
+
+    @ApiOperation(value = "Update a single review")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("")
+    public MenuItemReview updateMenuItemReview(
+            @ApiParam("id") @RequestParam Long id,
+            @RequestBody @Valid MenuItemReview incoming) {
+        MenuItemReview menuItemReview = menuItemReviewRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(MenuItemReview.class, id));
+
+        menuItemReview.setReviewerEmail(incoming.getReviewerEmail());
+        menuItemReview.setDateReviewed(incoming.getDateReviewed());
+        menuItemReview.setItemId(incoming.getItemId());
+        menuItemReview.setStars(incoming.getStars());
+        menuItemReview.setComments(incoming.getComments());
+
+        menuItemReviewRepository.save(menuItemReview);
         return menuItemReview;
     }
 

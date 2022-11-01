@@ -256,87 +256,93 @@ public class MenuItemReviewControllerTests extends ControllerTestCase {
         // }
 
         
-        // TEST FOR EDIT BY ID
-        // @WithMockUser(roles = { "ADMIN", "USER" })
-        // @Test
-        // public void admin_can_edit_an_existing_review() throws Exception {
-        //         // arrange
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void admin_can_edit_an_existing_review() throws Exception {
+                // arrange
 
-        //         LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+                LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
 
-        //         MenuItemReview menuItemReviewOrig = MenuItemReview.builder()
-        //                         .itemId(0)
-        //                         .reviewerEmail("jev@ucsb.edu")
-        //                         .stars(2)
-        //                         .comments("some comments")
-        //                         .dateReviewed(ldt1)
-        //                         .build();
+                MenuItemReview menuItemReviewOrig = MenuItemReview.builder()
+                                .itemId(0)
+                                .reviewerEmail("jev@ucsb.edu")
+                                .stars(2)
+                                .comments("some comments")
+                                .dateReviewed(ldt1)
+                                .build();
 
-        //         LocalDateTime ldt2 = LocalDateTime.parse("2022-01-03T00:00:00");
+                LocalDateTime ldt2 = LocalDateTime.parse("2022-01-03T00:00:00");
 
-        //         MenuItemReview menuItemReviewEdited = MenuItemReview.builder()
-        //                         .itemId(0)
-        //                         .reviewerEmail("jev@ucsb.edu")
-        //                         .stars(5)
-        //                         .comments("no actually its good")
-        //                         .dateReviewed(ldt2)
-        //                         .build();
+                MenuItemReview menuItemReviewEdited = MenuItemReview.builder()
+                                .itemId(0)
+                                .reviewerEmail("jev@ucsb.edu")
+                                .stars(5)
+                                .comments("no actually its good")
+                                .dateReviewed(ldt2)
+                                .build();
 
-        //         String requestBody = mapper.writeValueAsString(menuItemReviewEdited);
+                String requestBody = mapper.writeValueAsString(menuItemReviewEdited);
 
-        //         when(menuItemReviewRepository.findById(eq(67L))).thenReturn(Optional.of(menuItemReviewOrig));
+                when(menuItemReviewRepository.findById(eq(67L))).thenReturn(Optional.of(menuItemReviewOrig));
 
-        //         // act
-        //         MvcResult response = mockMvc.perform(
-        //                         put("/api/menuitemreview?id=67")
-        //                                         .contentType(MediaType.APPLICATION_JSON)
-        //                                         .characterEncoding("utf-8")
-        //                                         .content(requestBody)
-        //                                         .with(csrf()))
-        //                         .andExpect(status().isOk()).andReturn();
+                // act
+                MvcResult response = mockMvc.perform(
+                                put("/api/menuitemreview?id=67")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .characterEncoding("utf-8")
+                                                .content(requestBody)
+                                                .with(csrf()))
+                                .andExpect(status().isOk()).andReturn();
 
-        //         // assert
-        //         verify(menuItemReviewRepository, times(1)).findById(67L);
-        //         verify(menuItemReviewRepository, times(1)).save(menuItemReviewEdited); // should be saved with correct user
-        //         String responseString = response.getResponse().getContentAsString();
-        //         assertEquals(requestBody, responseString);
-        // }
+                // assert
+                verify(menuItemReviewRepository, times(1)).findById(67L);
 
-        // TEST FOR EDIT BY ID
-        // @WithMockUser(roles = { "ADMIN", "USER" })
-        // @Test
-        // public void admin_cannot_edit_review_that_does_not_exist() throws Exception {
+                /* 
+                ** Test failure occurs here
+                ** Says menuItemReviewEdited = MenuItemReview(id=0, itemId=0, reviewerEmail=null, stars=0, dateReviewed=null, comments=null)
+                ** when menuItemReviewRepository.save(menuItemReviewEdited) occurs 
+                */ 
+                verify(menuItemReviewRepository, times(1)).save(menuItemReviewEdited); // should be saved with correct user
+                
+                
+                String responseString = response.getResponse().getContentAsString();
+                assertEquals(requestBody, responseString);
+        }
+        
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void admin_cannot_edit_review_that_does_not_exist() throws Exception {
 
-        //         // arrange
+                // arrange
 
-        //         LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+                LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
 
-        //         MenuItemReview menuItemReviewEdited = MenuItemReview.builder()
-        //                         .itemId(0)
-        //                         .reviewerEmail("jev@ucsb.edu")
-        //                         .stars(5)
-        //                         .comments("no actually its good")
-        //                         .dateReviewed(ldt1)
-        //                         .build();
+                MenuItemReview menuItemReviewEdited = MenuItemReview.builder()
+                                .itemId(0)
+                                .reviewerEmail("jev@ucsb.edu")
+                                .stars(5)
+                                .comments("no actually its good")
+                                .dateReviewed(ldt1)
+                                .build();
 
-        //         String requestBody = mapper.writeValueAsString(menuItemReviewEdited);
+                String requestBody = mapper.writeValueAsString(menuItemReviewEdited);
 
-        //         when(menuItemReviewRepository.findById(eq(67L))).thenReturn(Optional.empty());
+                when(menuItemReviewRepository.findById(eq(67L))).thenReturn(Optional.empty());
 
-        //         // act
-        //         MvcResult response = mockMvc.perform(
-        //                         put("/api/menuitemreview?id=67")
-        //                                         .contentType(MediaType.APPLICATION_JSON)
-        //                                         .characterEncoding("utf-8")
-        //                                         .content(requestBody)
-        //                                         .with(csrf()))
-        //                         .andExpect(status().isNotFound()).andReturn();
+                // act
+                MvcResult response = mockMvc.perform(
+                                put("/api/menuitemreview?id=67")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .characterEncoding("utf-8")
+                                                .content(requestBody)
+                                                .with(csrf()))
+                                .andExpect(status().isNotFound()).andReturn();
 
-        //         // assert
-        //         verify(menuItemReviewRepository, times(1)).findById(67L);
-        //         Map<String, Object> json = responseToJson(response);
-        //         assertEquals("MenuItemReview with id 67 not found", json.get("message"));
+                // assert
+                verify(menuItemReviewRepository, times(1)).findById(67L);
+                Map<String, Object> json = responseToJson(response);
+                assertEquals("MenuItemReview with id 67 not found", json.get("message"));
 
-        // }
+        }
 
 }
