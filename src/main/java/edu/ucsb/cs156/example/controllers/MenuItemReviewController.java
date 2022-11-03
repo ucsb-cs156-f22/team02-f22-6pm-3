@@ -11,14 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import edu.ucsb.cs156.example.entities.MenuItemReview;
-import edu.ucsb.cs156.example.errors.EntityNotFoundException;
 import edu.ucsb.cs156.example.repositories.MenuItemReviewRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,21 +58,5 @@ public class MenuItemReviewController extends ApiController {
        MenuItemReview savedMenuItemReview = menuItemReviewRepository.save(menuItemReview);
        return savedMenuItemReview;
     }
-
-    @ApiOperation(value="Delete a single menu item review")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping(value="")
-    public Object deleMenuItemReview(
-        @ApiParam("ID of menu item review to delete") @RequestParam long id
-    ) throws JsonProcessingException {
-        MenuItemReview menuItemReview = menuItemReviewRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(MenuItemReview.class, id));
-        
-        menuItemReviewRepository.delete(menuItemReview);
-        return genericMessage("MenuItemReview with id %s deleted".formatted(id));
-    }
-
-    
-
 }
 
