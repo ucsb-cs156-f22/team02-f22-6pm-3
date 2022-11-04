@@ -179,7 +179,7 @@ public class MenuItemReviewControllerTests extends ControllerTestCase {
                 LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
 
                 MenuItemReview menuItemReview1 = MenuItemReview.builder()
-                                .itemId(0)
+                                .itemId(1L)
                                 .reviewerEmail("jev@ucsb.edu")
                                 .stars(2)
                                 .comments("some_comments")
@@ -190,7 +190,7 @@ public class MenuItemReviewControllerTests extends ControllerTestCase {
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                post("/api/menuitemreview/post?itemId=0&reviewerEmail=jev@ucsb.edu&stars=2&comments=some_comments&dateReviewed=2022-01-03T00:00:00")
+                                post("/api/menuitemreview/post?itemId=1&reviewerEmail=jev@ucsb.edu&stars=2&comments=some_comments&dateReviewed=2022-01-03T00:00:00")
                                                 .with(csrf()))
                                 .andExpect(status().isOk()).andReturn();
 
@@ -264,18 +264,18 @@ public class MenuItemReviewControllerTests extends ControllerTestCase {
                 LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
 
                 MenuItemReview menuItemReviewOrig = MenuItemReview.builder()
-                                .itemId(0)
+                                .itemId(1L)
                                 .reviewerEmail("jev@ucsb.edu")
                                 .stars(2)
                                 .comments("some comments")
                                 .dateReviewed(ldt1)
                                 .build();
 
-                LocalDateTime ldt2 = LocalDateTime.parse("2022-01-03T00:00:00");
+                LocalDateTime ldt2 = LocalDateTime.parse("2022-02-03T00:00:00");
 
                 MenuItemReview menuItemReviewEdited = MenuItemReview.builder()
-                                .itemId(0)
-                                .reviewerEmail("jev@ucsb.edu")
+                                .itemId(2L)
+                                .reviewerEmail("jev2@ucsb.edu")
                                 .stars(5)
                                 .comments("no actually its good")
                                 .dateReviewed(ldt2)
